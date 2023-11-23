@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import Container from '../Container';
-import Title from '../form/Title';
-import FormInput from '../form/FormInput';
-import Submit from '../form/Submit';
-import CustomLink from '../CustomLink';
-import { commonModalClass } from '../../utils/Theme';
-import FormContainer from '../form/FormContainer';
+import { useNavigate } from 'react-router-dom';
 import { createUser } from '../../api/auth';
+import { commonModalClass } from '../../utils/Theme';
+import Container from '../Container';
+import FormContainer from '../form/FormContainer';
+import CustomLink from '../CustomLink';
+import FormInput from '../form/FormInput';
+import Title from '../form/Title';
+import Submit from '../form/Submit';
 
 const validateUserInfo = ({ name, email, password, rePassword }) => {
   // eslint-disable-next-line
@@ -52,6 +53,8 @@ export default function Signup() {
     rePassword: '',
   });
 
+  const navigate = useNavigate();
+
   const { name, email, password, rePassword } = userInfo;
 
   const handleChange = ({ target }) => {
@@ -67,7 +70,12 @@ export default function Signup() {
 
     const respone = await createUser(userInfo);
     if (respone.error) return console.log(respone.error);
-    console.log(respone.user);
+
+    navigate('/auth/verification', {
+      state: { user: respone.user },
+      /**prevent go back to the previous screen */
+      replace: true,
+    });
   };
 
   return (
@@ -88,7 +96,7 @@ export default function Signup() {
           <FormInput
             value={rePassword}
             onChange={handleChange}
-            label="rePassword"
+            label="Comfirm Password"
             placeholder="********"
             name="rePassword"
             type="password"
