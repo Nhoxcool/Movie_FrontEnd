@@ -7,9 +7,21 @@ import Submit from '../form/Submit';
 import { useRef } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClass } from '../../utils/Theme';
+import { verifyUserEmail } from '../../api/auth';
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
+
+const isValidOTP = (otp) => {
+  let valid = false;
+
+  for (let val of otp) {
+    valid = !isNaN(parseInt(val));
+    if (!valid) break;
+  }
+
+  return valid;
+};
 
 export default function EmailVerification() {
   const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(''));
@@ -49,6 +61,20 @@ export default function EmailVerification() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isValidOTP(otp)) {
+      return console.log('invalid OTP');
+    }
+
+    //submit otp
+    const { error, message } = await verifyUserEmail({ OTP: otp.join(''), userId: user.id });
+    if (error) return console.log(error);
+
+    console.log(message);
+  };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
@@ -63,7 +89,7 @@ export default function EmailVerification() {
   return (
     <FormContainer>
       <Container>
-        <form className={commonModalClass}>
+        <form onSubmit={handleSubmit} className={commonModalClass}>
           <div>
             <Title>Please enter the OTP to verifiy your account</Title>
             <p className="text-center dark:text-dark-subtle text-light-subtle">OTP has been send to your email</p>
@@ -83,7 +109,7 @@ export default function EmailVerification() {
               );
             })}
           </div>
-          <Submit value="Send link" />
+          <Submit value="Verify Account" />
         </form>
       </Container>
     </FormContainer>
