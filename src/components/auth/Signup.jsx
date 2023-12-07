@@ -8,6 +8,7 @@ import CustomLink from '../CustomLink';
 import FormInput from '../form/FormInput';
 import Title from '../form/Title';
 import Submit from '../form/Submit';
+import { useNotification } from '../../hooks';
 
 const validateUserInfo = ({ name, email, password, rePassword }) => {
   // eslint-disable-next-line
@@ -55,6 +56,8 @@ export default function Signup() {
 
   const navigate = useNavigate();
 
+  const { updateNotification } = useNotification();
+
   const { name, email, password, rePassword } = userInfo;
 
   const handleChange = ({ target }) => {
@@ -66,7 +69,7 @@ export default function Signup() {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
 
-    if (!ok) return console.log(error);
+    if (!ok) return updateNotification('error', error);
 
     const response = await createUser(userInfo);
     if (response.error) return console.log(response.error);

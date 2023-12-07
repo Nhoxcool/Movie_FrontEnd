@@ -8,6 +8,7 @@ import { useRef } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClass } from '../../utils/Theme';
 import { verifyUserEmail } from '../../api/auth';
+import { useNotification } from '../../hooks';
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
@@ -28,6 +29,7 @@ export default function EmailVerification() {
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
   const inputRef = useRef();
+  const { updateNotification } = useNotification();
 
   const { state } = useLocation();
   const user = state?.user;
@@ -70,9 +72,9 @@ export default function EmailVerification() {
 
     //submit otp
     const { error, message } = await verifyUserEmail({ OTP: otp.join(''), userId: user.id });
-    if (error) return console.log(error);
+    if (error) return updateNotification('error', error);
 
-    console.log(message);
+    updateNotification('success', message);
   };
 
   useEffect(() => {
