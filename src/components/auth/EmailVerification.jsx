@@ -8,7 +8,7 @@ import { useRef } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClass } from '../../utils/Theme';
 import { verifyUserEmail } from '../../api/auth';
-import { useNotification } from '../../hooks';
+import { useAuth, useNotification } from '../../hooks';
 
 const OTP_LENGTH = 6;
 let currentOTPIndex;
@@ -28,6 +28,8 @@ export default function EmailVerification() {
   const [otp, setOtp] = useState(new Array(OTP_LENGTH).fill(''));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
+  const { isAuth, authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
   const inputRef = useRef();
   const { updateNotification } = useNotification();
 
@@ -71,10 +73,12 @@ export default function EmailVerification() {
     }
 
     //submit otp
-    const { error, message } = await verifyUserEmail({ OTP: otp.join(''), userId: user.id });
+    const { error, message, user: userResponse } = await verifyUserEmail({ OTP: otp.join(''), userId: user.id });
     if (error) return updateNotification('error', error);
 
     updateNotification('success', message);
+    localStorage.setItem('auth-token', userResponse.token);
+    isAuth();
   };
 
   useEffect(() => {
@@ -84,7 +88,9 @@ export default function EmailVerification() {
   useEffect(() => {
     if (!user) navigate('/not-fonud');
     // eslint-disable-next-line
-  }, [user]);
+    if (isLoggedIn) navigate('/');
+    // eslint-disable-next-line
+  }, [user, isLoggedIn]);
 
   // if (!user) return null;
 

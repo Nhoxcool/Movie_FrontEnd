@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUser } from '../../api/auth';
 import { commonModalClass } from '../../utils/Theme';
@@ -8,7 +8,7 @@ import CustomLink from '../CustomLink';
 import FormInput from '../form/FormInput';
 import Title from '../form/Title';
 import Submit from '../form/Submit';
-import { useNotification } from '../../hooks';
+import { useAuth, useNotification } from '../../hooks';
 
 const validateUserInfo = ({ name, email, password, rePassword }) => {
   // eslint-disable-next-line
@@ -55,6 +55,8 @@ export default function Signup() {
   });
 
   const navigate = useNavigate();
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
 
   const { updateNotification } = useNotification();
 
@@ -79,6 +81,11 @@ export default function Signup() {
       replace: true,
     });
   };
+
+  useEffect(() => {
+    if (isLoggedIn) navigate('/');
+    // eslint-disable-next-line
+  }, [isLoggedIn]);
 
   return (
     <FormContainer>
