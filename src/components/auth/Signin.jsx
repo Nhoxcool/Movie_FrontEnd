@@ -8,10 +8,10 @@ import { commonModalClass } from '../../utils/Theme';
 import FormContainer from '../form/FormContainer';
 import { useAuth, useNotification } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
+import { isValidEmail } from '../../utils/helper';
 
 const validateUserInfo = ({ email, password }) => {
   // eslint-disable-next-line
-  const isValidEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const isValidPassword = {
     // eslint-disable-next-line
     capital: /(?=.*[A-Z])/,
@@ -24,7 +24,7 @@ const validateUserInfo = ({ email, password }) => {
   };
 
   if (!email.trim()) return { ok: false, error: 'Email is missing!' };
-  if (!isValidEmail.test(email)) return { ok: false, error: 'Invalide email!' };
+  if (!isValidEmail(email)) return { ok: false, error: 'Invalide email!' };
 
   if (!password.trim()) return { ok: false, error: 'Password is missing!' };
   if (!isValidPassword.capital.test(password))

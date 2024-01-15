@@ -9,12 +9,12 @@ import FormInput from '../form/FormInput';
 import Title from '../form/Title';
 import Submit from '../form/Submit';
 import { useAuth, useNotification } from '../../hooks';
+import { isValidEmail } from '../../utils/helper';
 
 const validateUserInfo = ({ name, email, password, rePassword }) => {
   // eslint-disable-next-line
   const isValidName = /^[a-z A-Z]+$/;
   // eslint-disable-next-line
-  const isValidEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const isValidPassword = {
     // eslint-disable-next-line
     capital: /(?=.*[A-Z])/,
@@ -30,7 +30,7 @@ const validateUserInfo = ({ name, email, password, rePassword }) => {
   if (!isValidName.test(name)) return { ok: false, error: 'Invalide name!' };
 
   if (!email.trim()) return { ok: false, error: 'Email is missing!' };
-  if (!isValidEmail.test(email)) return { ok: false, error: 'Invalide email!' };
+  if (!isValidEmail(email)) return { ok: false, error: 'Invalide email!' };
 
   if (!password.trim()) return { ok: false, error: 'Password is missing!' };
   if (!isValidPassword.capital.test(password))
