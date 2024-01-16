@@ -22,7 +22,7 @@ export default function ForgetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isValidEmail(email)) return updateNotification('error', 'Invalid Email!');
+    if (!isValidEmail(email)) return updateNotification('error', 'Invalid Email!');
     const { error, message } = await forgetPassword(email);
     if (error) return updateNotification('error', error);
     updateNotification('success', message);
