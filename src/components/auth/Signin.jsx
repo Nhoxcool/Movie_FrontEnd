@@ -6,36 +6,36 @@ import Submit from '../form/Submit';
 import CustomLink from '../CustomLink';
 import { commonModalClass } from '../../utils/Theme';
 import FormContainer from '../form/FormContainer';
-import { useAuth, useNotification } from '../../hooks';
+import { useAuth } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
-import { isValidEmail } from '../../utils/helper';
+// import { isValidEmail } from '../../utils/helper';
 
-const validateUserInfo = ({ email, password }) => {
-  // eslint-disable-next-line
-  const isValidPassword = {
-    // eslint-disable-next-line
-    capital: /(?=.*[A-Z])/,
-    // eslint-disable-next-line
-    length: /(?=.{8,20}$)/,
-    // eslint-disable-next-line
-    specialChar: /[ -\/:-@\[-\`{-~]/,
-    // eslint-disable-next-line
-    digit: /(?=.*[0-9])/,
-  };
+// const validateUserInfo = ({ email, password }) => {
+//   // eslint-disable-next-line
+//   const isValidPassword = {
+//     // eslint-disable-next-line
+//     capital: /(?=.*[A-Z])/,
+//     // eslint-disable-next-line
+//     length: /(?=.{8,20}$)/,
+//     // eslint-disable-next-line
+//     specialChar: /[ -\/:-@\[-\`{-~]/,
+//     // eslint-disable-next-line
+//     digit: /(?=.*[0-9])/,
+//   };
 
-  if (!email.trim()) return { ok: false, error: 'Email is missing!' };
-  if (!isValidEmail(email)) return { ok: false, error: 'Invalide email!' };
+//   if (!email.trim()) return { ok: false, error: 'Email is missing!' };
+//   if (!isValidEmail(email)) return { ok: false, error: 'Invalide email!' };
 
-  if (!password.trim()) return { ok: false, error: 'Password is missing!' };
-  if (!isValidPassword.capital.test(password))
-    return { ok: false, error: 'Password is at least one capital characters!' };
-  if (!isValidPassword.length.test(password))
-    return { ok: false, error: 'Password must be between 8 to 20 characters long!' };
-  if (!isValidPassword.specialChar.test(password)) return { ok: false, error: 'Password is at least one symbol!' };
-  if (!isValidPassword.digit.test(password)) return { ok: false, error: 'Password is at least one number!' };
+//   if (!password.trim()) return { ok: false, error: 'Password is missing!' };
+//   if (!isValidPassword.capital.test(password))
+//     return { ok: false, error: 'Password is at least one capital characters!' };
+//   if (!isValidPassword.length.test(password))
+//     return { ok: false, error: 'Password must be between 8 to 20 characters long!' };
+//   if (!isValidPassword.specialChar.test(password)) return { ok: false, error: 'Password is at least one symbol!' };
+//   if (!isValidPassword.digit.test(password)) return { ok: false, error: 'Password is at least one number!' };
 
-  return { ok: true };
-};
+//   return { ok: true };
+// };
 
 export default function Signin() {
   const [userInfo, setUserInfo] = useState({
@@ -45,7 +45,7 @@ export default function Signin() {
   });
 
   const navigate = useNavigate();
-  const { updateNotification } = useNotification();
+  // const { updateNotification } = useNotification();
 
   const { handleLogin, authInfo } = useAuth();
   const { isPending, isLoggedIn } = authInfo;
@@ -57,9 +57,9 @@ export default function Signin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { ok, error } = validateUserInfo(userInfo);
+    // const { ok, error } = validateUserInfo(userInfo);
 
-    if (!ok) return updateNotification('error', error);
+    // if (!ok) return updateNotification('error', error);
 
     handleLogin(userInfo.email, userInfo.password);
   };
