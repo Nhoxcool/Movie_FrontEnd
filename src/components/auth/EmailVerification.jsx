@@ -7,7 +7,7 @@ import Submit from '../form/Submit';
 import { useRef } from 'react';
 import FormContainer from '../form/FormContainer';
 import { commonModalClass } from '../../utils/Theme';
-import { verifyUserEmail } from '../../api/auth';
+import { resendEmailVerificationToken, verifyUserEmail } from '../../api/auth';
 import { useAuth, useNotification } from '../../hooks';
 
 const OTP_LENGTH = 6;
@@ -29,7 +29,8 @@ export default function EmailVerification() {
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
   const { isAuth, authInfo } = useAuth();
-  const { isLoggedIn } = authInfo;
+  const { isLoggedIn, profile } = authInfo;
+  const isVerified = profile?.isVerified;
   const inputRef = useRef();
   const { updateNotification } = useNotification();
 
@@ -56,6 +57,14 @@ export default function EmailVerification() {
     if (!value) focusPrevInputField(currentOTPIndex);
     else focusNextInputField(currentOTPIndex);
     setOtp([...newOtp]);
+  };
+
+  const handleOtpResend = async () => {
+    const { error, message } = await resendEmailVerificationToken(user.id);
+
+    if (error) return updateNotification('error', error);
+
+    updateNotification('success', message);
   };
 
   const handleKeyDown = ({ key }, index) => {
@@ -88,9 +97,9 @@ export default function EmailVerification() {
   useEffect(() => {
     if (!user) navigate('/not-fonud');
     // eslint-disable-next-line
-    if (isLoggedIn) navigate('/');
+    if (isLoggedIn && isVerified) navigate('/');
     // eslint-disable-next-line
-  }, [user, isLoggedIn]);
+  }, [user, isLoggedIn, isVerified]);
 
   // if (!user) return null;
 
@@ -117,7 +126,16 @@ export default function EmailVerification() {
               );
             })}
           </div>
-          <Submit value="Verify Account" />
+          <div>
+            <Submit value="Verify Account" />
+            <button
+              onClick={handleOtpResend}
+              type="button"
+              className="dark:text-white text-blue-500 font-semibold hover:underline mt-3 ml-80"
+            >
+              I don't have OTP
+            </button>
+          </div>
         </form>
       </Container>
     </FormContainer>
